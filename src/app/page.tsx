@@ -1,0 +1,28 @@
+"use client";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/src/services/authService';
+
+export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Verificar si el usuario ya está autenticado
+    if (authService.isAuthenticated()) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login');
+    }
+  }, [router]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Redirigiendo...</p>
+      </div>
+    </div>
+  );
+}
+
