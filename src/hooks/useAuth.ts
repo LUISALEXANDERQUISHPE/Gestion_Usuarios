@@ -39,9 +39,25 @@ export function useAuth() {
   const login = async (credentials: LoginCredentials) => {
     try {
       const response = await authService.login(credentials);
-      setUser(response.user);
-      router.push('/dashboard');
-      return { success: true };
+      
+      // El servicio ahora devuelve { success, data, static? }
+      if (response.success) {
+        // Esperar un momento para que las cookies se guarden
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const userFromCookie = authService.getUser();
+        if (userFromCookie) {
+          setUser(userFromCookie);
+        }
+        
+        router.push('/dashboard');
+        return { success: true };
+      }
+      
+      return { 
+        success: false, 
+        error: 'Error al iniciar sesión' 
+      };
     } catch (error: any) {
       return { 
         success: false, 
